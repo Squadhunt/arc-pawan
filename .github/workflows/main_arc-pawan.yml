@@ -18,7 +18,7 @@ jobs:
       - name: Set up Node.js version
         uses: actions/setup-node@v3
         with:
-          node-version: '18.x'   # Node 18 LTS is stable (22.x avoid karo)
+          node-version: '18.x'   # Node 18 LTS is stable
 
       - name: npm install, build, and test (backend only)
         working-directory: backend
@@ -45,7 +45,8 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: node-app
-      
+          path: backend   # <-- Artifact ko backend folder me extract karenge
+
       - name: Login to Azure
         uses: azure/login@v2
         with:
@@ -53,10 +54,9 @@ jobs:
           tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_6ABFE9F96057415DBEDC2DCA93F71B71 }}
           subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_B2CDFAB167DF44ABB4FC86648930F0BF }}
 
-      - name: 'Deploy to Azure Web App'
-        id: deploy-to-webapp
+      - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
         with:
-          app-name: 'Arc-pawan'   # <- Azure Web App name from portal
+          app-name: 'Arc-pawan'   # <- Azure Web App name
           slot-name: 'Production'
-          package: .
+          package: backend        # <-- Sirf backend folder deploy hoga
